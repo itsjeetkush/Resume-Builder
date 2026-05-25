@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CVPro - Resume Builder (Retro Theme)</title>
+    <style>
+        /* Global App Variables - Windows 95 / Retro Theme */
+        :root {
+            --win-bg:teal; /* Classic Teal */
+            --win-gray: #c0c0c0;
+            --win-dark-gray: #808080;
+            --win-blue: #333;
+            --border-light: #ffffff;
+            --border-dark: #808080;
+            --border-darker: #000000;
+            --paper-bg: #fdfaf2; /* Vintage paper color */
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--win-bg);
+            color: black;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            /* Classic retro fonts */
+            font-family: 'MS Sans Serif', Tahoma, Geneva, sans-serif; 
+        }
+
+        /* Retro 3D Box Styling */
+        .retro-box {
+            background-color: var(--win-gray);
+            border-top: 2px solid var(--border-light);
+            border-left: 2px solid var(--border-light);
+            border-right: 2px solid var(--border-darker);
+            border-bottom: 2px solid var(--border-darker);
+        }
+
+        /* App Header */
+        .app-header {
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--win-blue);
+            font-family: 'Times New Roman', Times, serif;
+            text-shadow: 1px 1px 0px white;
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background-color: var(--win-gray);
+            color: black;
+            padding: 5px 15px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            cursor: pointer;
+            border-top: 2px solid var(--border-light);
+            border-left: 2px solid var(--border-light);
+            border-right: 2px solid var(--border-darker);
+            border-bottom: 2px solid var(--border-darker);
+            font-family: 'MS Sans Serif', Tahoma, Geneva, sans-serif; 
+        }
+
+        .btn-primary:active {
+            border-top: 2px solid var(--border-darker);
+            border-left: 2px solid var(--border-darker);
+            border-right: 2px solid var(--border-light);
+            border-bottom: 2px solid var(--border-light);
+            padding: 6px 14px 4px 16px; /* Shift text slightly to mimic press */
+        }
+
+        /* Main Layout Setup */
+        .app-container {
+            display: flex;
+            flex: 1;
+            gap: 15px;
+            padding: 15px;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Editor Section (Form) */
+        .editor-section {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            max-height: calc(100vh - 120px);
+        }
+
+        .editor-section h2 {
+            background-color: var(--win-blue);
+            color: white;
+            font-size: 1rem;
+            padding: 3px 8px;
+            margin-bottom: 15px;
+            margin-top: 20px;
+            border-radius: 0;
+            font-weight: normal;
+        }
+
+        .editor-section h2:first-child { margin-top: 0; }
+
+        .form-group {
+            margin-bottom: 12px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+        .form-row .form-group { flex: 1; }
+
+        label {
+            text-transform: capitalize;
+            font-size: 0.85rem;
+            margin-bottom: 3px;
+        }
+
+        /* Input Fields - Inset 3D */
+        input, textarea {
+            padding: 6px;
+            background: white;
+            color: black;
+            font-family: 'MS Sans Serif', Tahoma, Geneva, sans-serif; 
+            border-top: 2px solid var(--border-dark);
+            border-left: 2px solid var(--border-dark);
+            border-right: 2px solid var(--border-light);
+            border-bottom: 2px solid var(--border-light);
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            background-color: #ffffe0; /* slight yellow tint on focus */
+        }
+
+        /* Preview Section (The Resume) */
+        .preview-section {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            overflow-y: auto;
+            max-height: calc(100vh - 120px);
+        }
+
+        /* Typewriter Resume Paper */
+        .resume-paper {
+            background-color: var(--paper-bg);
+            color: black;
+            width: 100%;
+            max-width: 800px;
+            min-height: 1000px;
+            padding: 40px;
+            border: 1px solid black;
+            box-shadow: 8px 8px 0px rgba(0, 0, 0, 0.7); /* Hard retro shadow */
+            font-family: 'arial', Courier, monospace; /* Old typewriter font */
+        }
+
+        /* Specific Resume Styles */
+        .res-header {
+            border-bottom: 1px solid black;
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .res-header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .res-header p { font-size: 1rem; font-weight: bold; }
+
+        .res-profile-section {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            align-items: flex-start;
+        }
+
+        .res-details p {
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+
+        .res-photo {
+            width: 130px;
+            height: 160px;
+            border: 2px solid black;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #eee;
+            position: relative;
+        
+        }
+
+        .res-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+   
+        }
+
+        .res-section { margin-bottom: 30px; }
+
+        .res-heading {
+            font-size: 1.2rem;
+            font-weight: bold;
+          
+            padding: 5px 0;
+            margin-bottom: 15px;
+            border-top: 2px solid black;
+            border-bottom: 2px solid black;
+            background-color: #e8e4d9;
+            text-align: center;
+        }
+
+        /* Table Styles - Retro */
+        .res-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+        }
+
+        .res-table th, .res-table td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+            font-size: 0.95rem;
+        }
+
+        .res-table th {
+            font-weight: bold;
+            background-color: #e8e4d9;
+        }
+
+        /* List Styles */
+        .res-list {
+            margin-left: 20px;
+            font-size: 1rem;
+            list-style-type: square;
+        }
+        .res-list li { margin-bottom: 8px; }
+
+        .res-job h3 {
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+            text-decoration: underline;
+        }
+
+        .job-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 1rem;
+            font-weight: bold;
+        }
+
+        .declaration { margin-bottom: 40px; font-size: 0.95rem; font-style: italic;}
+        .signature { margin-top: 30px; font-size: 1rem; font-weight: bold;}
+
+        /* Footer */
+        .app-footer {
+            text-align: center;
+            padding: 10px;
+            margin-top: auto;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 900px) {
+            .app-container {
+                flex-direction: column;
+            }
+            .editor-section, .preview-section {
+                max-height: none;
+            }
+        }
+
+        /* Print CSS - Ensures the paper prints neatly */
+        @media print {
+            body * { visibility: hidden; }
+            .resume-paper, .resume-paper * {
+                visibility: visible;
+            }
+            body { background: white; }
+            .resume-paper {
+                position: absolute;
+                left: 0;
+                top: 0;
+                box-shadow: none;
+                padding: 0;
+                width: 100%;
+                border: none;
+                background-color: white !important;
+            }
+            .res-heading {
+                background-color: transparent !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            .res-photo img {
+                filter: none; /* Remove grayscale for print if desired */
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="app-header retro-box">
+        <div class="logo">CVPro v1.0</div>
+        <button onclick="window.print()" class="btn-primary">Print / Export</button>
+    </header>
+
+    <main class="app-container">
+        <section class="editor-section retro-box">
+            <h2>Personal Information</h2>
+            <div class="form-group">
+                <label>Upload Profile Photo</label>
+                <input type="file" id="inp-photo" accept="image/png, image/jpeg, image/jpg">
+            </div>
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" id="inp-name" value="" >
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <input type="text" id="inp-phone" value="">
+                </div>
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="inp-email" value="@gmail.com">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Date of Birth</label>
+                    <input type="text" id="inp-dob" value="">
+                </div>
+                <div class="form-group">
+                    <label>Gender</label>
+                    <input type="text" id="inp-gender" value="">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Father's Name</label>
+                <input type="text" id="inp-father" value="">
+            </div>
+            <div class="form-group">
+                <label>Nationality</label>
+                <input type="text" id="inp-nationality" value="Indian">
+            </div>
+            <div class="form-group">
+                <label>Address</label>
+                <input type="text" id="inp-address" value="">
+            </div>
+            <div class="form-group">
+                <label>Languages Known</label>
+                <input type="text" id="inp-lang" value="English (Fluent) & Hindi (Fluent)">
+            </div>
+
+            <h2>Educational Qualifications</h2>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Degree / Exam</label>
+                    <input type="text" id="inp-edu-degree" placeholder="e.g., 12th (HSSC)">
+                </div>
+                <div class="form-group">
+                    <label>Institution</label>
+                    <input type="text" id="inp-edu-inst" placeholder="e.g., Mount Carmel College">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Year of Pass</label>
+                    <input type="text" id="inp-edu-year" placeholder="e.g., 2024">
+                </div>
+                <div class="form-group">
+                    <label>Marks / Percentage</label>
+                    <input type="text" id="inp-edu-marks" placeholder="e.g., 85%">
+                </div>
+            </div>
+            <div class="form-row" style="margin-bottom: 2rem;">
+                <button type="button" id="btn-add-edu" class="btn-primary" style="flex: 1; margin-right: 0.5rem;">Add Education</button>
+                <button type="button" id="btn-clear-edu" class="btn-primary" style="flex: 1; margin-left: 0.5rem;">Clear All Rows</button>
+            </div>
+
+            <h2>Work Experience</h2>
+            <div class="form-group">
+                <label>Job Title</label>
+                <input type="text" id="inp-job-title" value="">
+            </div>
+            <div class="form-group">
+                <label>Company & Dates</label>
+                <input type="text" id="inp-job-details" value="">
+            </div>
+            <div class="form-group">
+                <label>Responsibilities (Comma separated)</label>
+                <textarea id="inp-job-desc" rows="3"></textarea>
+            </div>
+
+            <h2>Skills</h2>
+            <div class="form-group">
+                <label>Skills (Comma separated)</label>
+                <textarea id="inp-skills" rows="3">Proficient in MS Office (Word, Excel, PowerPoint), Strong communication and interpersonal skills</textarea>
+            </div>
+        </section>
+
+        <section class="preview-section">
+            <div class="resume-paper" id="resume-preview">
+                <div class="res-header">
+                    <h1 id="out-name">Christina D'Souza</h1>
+                    <p>Phone: <span id="out-phone">+91 98765 43210</span> | Email: <span id="out-email">christina.dsouza@email.com</span></p>
+                </div>
+
+                <div class="res-profile-section">
+                    <div class="res-details">
+                        <p>DOB          : <span id="out-dob"></span></p>
+                        <p>Gender       : <span id="out-gender"></span></p>
+                        <p>Father       : <span id="out-father"></span></p>
+                        <p>Nationality  : <span id="out-nationality"></span></p>
+                        <p>Address      : <span id="out-address"></span></p>
+                        <p>Languages    : <span id="out-lang">English (Fluent) & Hindi (Fluent)</span></p>
+                    </div>
+                    <div class="res-photo">
+                        <img id="out-photo" src="" alt="Photo" style="display: none;">
+                        <div id="photo-placeholder-text">[ PHOTO ]</div>
+                    </div>
+    
+                </div>
+
+                <div class="res-section">
+                    <h2 class="res-heading">Educational Qualifications</h2>
+                    <table class="res-table">
+                        <thead>
+                            <tr>
+                                <th>DEGREE</th>
+                                <th>INSTITUTION</th>
+                                <th>YEAR</th>
+                                <th>MARKS</th>
+                            </tr>
+                        </thead>
+                        <tbody id="out-edu-tbody">
+                           
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="res-section">
+                    <h2 class="res-heading">Work Experience</h2>
+                    <div class="res-job">
+                        <h3 id="out-job-title"></h3>
+                        <p class="job-meta" id="out-job-details"><span class="job-dates"></span></p>
+                        <ul id="out-job-desc" class="res-list">
+                          
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="res-section">
+                    <h2 class="res-heading">Skills</h2>
+                    <ul id="out-skills" class="res-list">
+                        <li>Proficient in MS Office (Word, Excel, PowerPoint)</li>
+                        <li>Strong communication and interpersonal skills</li>
+                    </ul>
+                </div>
+
+                <div class="res-section">
+                    <p class="declaration">Declaration: I declare the above information true and complete to the best of my knowledge.</p>
+                    <p class="signature">Signature:</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="app-footer retro-box">
+        <div class="footer-container">
+            <div class="footer-column">
+                <h4>Navigation</h4>
+                <ul>
+                    <li><a href="#">Home Page</a></li>
+                    <li><a href="#">About CVPro</a></li>
+                    <li><a href="#">App Features</a></li>
+                    <li><a href="#">Version History</a></li>
+                    <li><a href="#">Site Map</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column">
+                <h4>Templates</h4>
+                <ul>
+                    <li><a href="#">Typewriter Style</a></li>
+                    <li><a href="#">Windows 95 Classic</a></li>
+                    <li><a href="#">Dot-Matrix Draft</a></li>
+                    <li><a href="#">Formal Academic</a></li>
+                    <li><a href="#">Executive Retro</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column">
+                <h4>Help & Tools</h4>
+                <ul>
+                    <li><a href="#">User Manual (.TXT)</a></li>
+                    <li><a href="#">FAQ Section</a></li>
+                    <li><a href="#">Report a Bug</a></li>
+                    <li><a href="#">Submit Feedback</a></li>
+                    <li><a href="#">Contact Webmaster</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column">
+                <h4>Legal Info </h4>
+                <ul>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                    <li><a href="#">EULA License</a></li>
+                    <li><a href="#">Cookie Settings</a></li>
+                    <li><a href="#">Credits & Staff</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 1998 CVPro Software Corporation. All rights reserved.</p>
+            <p style="font-size: 0.8rem; color: #4a4a4a; margin-top: 5px;">
+                Designed for Microsoft Internet Explorer 4.0 & Netscape Navigator. <br>
+                Optimized for 800x600 Screen Resolution.
+            </p>
+        </div>
+    </footer>
+<style>
+/* Massive Retro Footer Styling */
+        .app-footer {
+            padding: 20px 30px;
+            margin-top: auto;
+            display: block;
+            background-color: var(--win-gray);
+        }
+
+        .footer-container {
+            display: table;
+            width: 100%;
+            margin-bottom: 20px;
+            border-bottom: 2px dashed var(--win-dark-gray);
+            padding-bottom: 15px;
+        }
+
+        .footer-column {
+            display: table-cell;
+            width: 25%;
+            vertical-align: top;
+            padding: 0 10px;
+        }
+
+        .footer-column h4 {
+            font-size: 0.95rem;
+            color: var(--win-blue);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            font-weight: bold;
+            text-decoration: underline;
+        }
+
+        .footer-column ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 6px;
+        }
+
+        .footer-column a {
+            color: black;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        .footer-column a:hover {
+            color: red;
+            text-decoration: underline;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }
+</style>
+    <script>
+        // Function to map input fields to output spans
+        function bindInput(inputId, outputId) {
+            const input = document.getElementById(inputId);
+            const output = document.getElementById(outputId);
+            if (input && output) {
+                input.addEventListener('input', (e) => { output.innerText = e.target.value; });
+            }
+        }
+
+        // Function to handle comma-separated lists
+        function bindListInput(inputId, outputListId) {
+            const input = document.getElementById(inputId);
+            const outputList = document.getElementById(outputListId);
+            if (input && outputList) {
+                input.addEventListener('input', (e) => {
+                    const items = e.target.value.split(',').map(item => item.trim()).filter(item => item !== "");
+                    outputList.innerHTML = '';
+                    items.forEach(item => {
+                        const li = document.createElement('li');
+                        li.innerText = item;
+                        outputList.appendChild(li);
+                    });
+                });
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            bindInput('inp-name', 'out-name');
+            bindInput('inp-phone', 'out-phone');
+            bindInput('inp-email', 'out-email');
+            bindInput('inp-dob', 'out-dob');
+            bindInput('inp-gender', 'out-gender');
+            bindInput('inp-father', 'out-father');
+            bindInput('inp-nationality', 'out-nationality');
+            bindInput('inp-address', 'out-address');
+            bindInput('inp-lang', 'out-lang');
+            bindInput('inp-job-title', 'out-job-title');
+            
+            const jobDetailsInput = document.getElementById('inp-job-details');
+            const jobDetailsOutput = document.getElementById('out-job-details');
+            if (jobDetailsInput && jobDetailsOutput) {
+                jobDetailsInput.addEventListener('input', (e) => {
+                    const parts = e.target.value.split('|');
+                    const company = parts[0] ? parts[0].trim() : '';
+                    const dates = parts[1] ? parts[1].trim() : '';
+                    jobDetailsOutput.innerHTML = `${company} <span class="job-dates">[${dates}]</span>`;
+                });
+            }
+
+            bindListInput('inp-job-desc', 'out-job-desc');
+            bindListInput('inp-skills', 'out-skills');
+
+            const photoInput = document.getElementById('inp-photo');
+            const photoOutput = document.getElementById('out-photo');
+            const placeholderText = document.getElementById('photo-placeholder-text');
+
+            if (photoInput && photoOutput) {
+                photoInput.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(event) {
+                            photoOutput.src = event.target.result;
+                            photoOutput.style.display = 'block';
+                            if (placeholderText) placeholderText.style.display = 'none';
+                        }
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+
+            const btnAddEdu = document.getElementById('btn-add-edu');
+            const btnClearEdu = document.getElementById('btn-clear-edu');
+            const eduTbody = document.getElementById('out-edu-tbody');
+
+            if (btnAddEdu && eduTbody) {
+                btnAddEdu.addEventListener('click', () => {
+                    const degree = document.getElementById('inp-edu-degree').value.trim();
+                    const inst = document.getElementById('inp-edu-inst').value.trim();
+                    const year = document.getElementById('inp-edu-year').value.trim();
+                    const marks = document.getElementById('inp-edu-marks').value.trim();
+
+                    if (degree !== "" && inst !== "") {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `<td>${degree}</td><td>${inst}</td><td>${year}</td><td>${marks}</td>`;
+                        eduTbody.appendChild(tr);
+
+                        document.getElementById('inp-edu-degree').value = '';
+                        document.getElementById('inp-edu-inst').value = '';
+                        document.getElementById('inp-edu-year').value = '';
+                        document.getElementById('inp-edu-marks').value = '';
+                    } else {
+                        alert('ERROR: Please enter at least the Degree and Institution.');
+                    }
+                });
+            }
+
+            if (btnClearEdu && eduTbody) {
+                btnClearEdu.addEventListener('click', () => {
+                    if(confirm("WARNING: Clear all education entries?")) {
+                        eduTbody.innerHTML = '';
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
